@@ -55,7 +55,8 @@ pipeline {
             sed -i 's/tag: .*/tag: "${params.build_version}"/' helm/app/values.yaml
             git add helm/app/values.yaml
             git commit -m "Update deployment image to version ${params.build_version}" || echo "No changes to commit"
-            git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git HEAD:main
+            git remote set-url origin https://efloria:${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git
+            git push origin HEAD:main
           """
         }
       }
