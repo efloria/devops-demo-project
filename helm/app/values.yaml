@@ -5,6 +5,7 @@
 replicaCount: 2
 
 image:
+  dockerhubUser: flocontainer
   githubID: efloria
   repository: demo-java-app
   pullPolicy: IfNotPresent
