@@ -24,15 +24,19 @@ pipeline {
         SONAR_URL = "http://sonarqube:9000"
       }
       steps {
-        withCredentials([string(credentialsId: 'Sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-          sh 'cd demo-java-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=$SONAR_URL'
+        withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_TOKEN')]) {
+          sh '''
+            cd demo-java-app
+            mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.token="$SONAR_TOKEN"
+          '''
         }
       }
     }
 
     stage('Build and Push Docker Image') {
       steps {
-        withCredentials([usernamePassword(credentialsId: 'dockerhub2', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
           sh """
             cd demo-java-app
             docker build -t flocontainer/demo-java-app:${params.build_version} .
